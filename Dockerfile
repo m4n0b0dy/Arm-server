@@ -27,8 +27,9 @@ RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git .
 
 #getting my code
 RUN git clone https://github.com/m4n0b0dy/Arm-server.git
-RUN pip3 install --upgrade pip
-RUN apt-get install python-setuptools -y
+#RUN pip3 install --upgrade pip
+#RUN apt-get install python-setuptools -y
+RUN pip3 install --upgrade pip==20.0.2 wheel==0.34.2 setuptools==49.6.0
 WORKDIR /openpose/Arm-server/env
 RUN pip3 install -r requirements.txt
 WORKDIR /openpose
