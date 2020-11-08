@@ -2,7 +2,7 @@ import os.path
 import pyinotify
 import json
 import requests
-import config
+import configs.config
 import os
 class FileWatcher(pyinotify.ProcessEvent):
     def __init__(self, watchdir, IP, PORT):
