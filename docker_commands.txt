@@ -1,0 +1,27 @@
+#create a new container of an image, and execute the container
+#docker run = docker create + docker start
+sudo docker run --gpus all --device=/dev/video0 --name pyopenpose -it pyopenpose:latest /bin/bash
+./build/examples/openpose/openpose.bin --display 0 --render_pose 0 --write_json output/
+exit
+#image container will be stopped on exit, can then be restarted, use this command
+
+#building a writeable container layer and running bash/internal command/killing it, step by step
+#essentially a more manual end to end of what we did with run
+sudo docker create --gpus all --device=/dev/video0 --name pyopenpose -it pyopenpose:latest
+sudo docker ps
+sudo docker start openpose
+sudo docker ps
+sudo docker exec -it pyopenpose bash
+./build/examples/openpose/openpose.bin --display 0 --render_pose 0 --write_json output/
+exit
+
+#to kill the container
+sudo docker kill pyopenpose
+#container will be killed on kill, not exit
+
+#run it as a host service
+sudo docker run --network="host" --gpus all --device=/dev/video0 --name pyopenpose -it pyopenpose:latest                              
+
+#making it work
+sudo xhost + 
+sudo docker run --network="host" -e DISPLAY --privileged --gpus all --device=/dev/video0 --name pyopenpose -it pyopenpose:latest
