@@ -4,6 +4,9 @@ import json
 import requests
 import configs.config
 import os
+import numpy as np
+import IK_SOLVER
+
 class FileWatcher(pyinotify.ProcessEvent):
     def __init__(self, watchdir, IP, PORT):
 
@@ -28,6 +31,7 @@ class FileWatcher(pyinotify.ProcessEvent):
         os.remove(pathname)
         if raw_data:
             data = reduce_data(raw_data)
+            data = convert_data(data)
             self.send_commands(data)
 
     def get_logs(self):
@@ -48,12 +52,26 @@ def divide_chunks(l, n):
     return list(zip(*[iter(l)]*n))
 
 #very specialized function to extract the x,y,z coordinates I want
+#UPDATE now going only from hand
 def reduce_data(data):
     data = data['people'][0]
-    all_body_data = divide_chunks(data['pose_keypoints_2d'], 3)
-    body_data = {k:list(all_body_data[v]) for k,v in config.KEY_BODY_INDEXES.items()}
+    #all_body_data = divide_chunks(data['pose_keypoints_2d'], 3)
+    #body_data = {k:list(all_body_data[v]) for k,v in config.KEY_BODY_INDEXES.items()}
 
     all_hand_data = divide_chunks(data['hand_{HAND}_keypoints_2d'.format(HAND=config.HAND)], 3)
-    hand_data = {k:list(all_hand_data[v]) for k,v in config.KEY_HAND_INDEXES.items()}
+    hand_data = {k:np.array(all_hand_data[v]) for k,v in config.KEY_HAND_INDEXES.items()}
 
-    return {'body_data':body_data, 'hand_data':hand_data}
+    #return {'body_data':body_data, 'hand_data':hand_data}
+    return hand_data
+
+def convert_data(hand_data):
+    shoulder_rot_pos,
+    shoulder_bend_pos,
+    elbow_pos,
+    wrist_bend_pos = IK_SOLVER.calc_arm_positions(hand_data['WRIST'])
+    wrist_rot_pos = IK_SOLVER.calc_wrist_rotation(hand_data['POINTER_BASE'],hand_data['PINKY_BASE'])
+    thumb_pos = IK_SOLVER.calc_fingers(hand_data['THUMB_TIP'], hand_data['THUMB_BASE'])
+    pointer_pos = IK_SOLVER.calc_fingers(hand_data['POINTER_TIP'], hand_data['POINTER_BASE'])
+    middle_pos = IK_SOLVER.calc_fingers(hand_data['MIDDLE_TIP'], hand_data['MIDDLE_BASE'])
+    ring_pos = IK_SOLVER.calc_fingers(hand_data['RING_TIP'], hand_data['RING_BASE'])
+    pinky_pos = IK_SOLVER.calc_fingers(hand_data['PINKY_TIP'], hand_data['PINKY_BASE'])
