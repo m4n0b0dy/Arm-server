@@ -84,3 +84,10 @@ def convert_data(hand_data):
             'MIDDLE':middle_pos,
             'RING':ring_pos,
             'PINKY':pinky_pos}
+
+def clean_data(hand_data):
+    ret_dic={}
+    for k, v in hand_data.items():
+        if not math.isnan(v):
+            ret_dic[k]=v
+    return ret_dic
