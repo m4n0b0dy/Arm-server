@@ -1,7 +1,9 @@
 import tinyik
 import numpy as np
-from configs import config
-
+import importlib
+import sys
+sys.path.insert(0, '../configs/')
+import config
 
 ARM = tinyik.Actuator(config.ARM_STRUCTURE)
 

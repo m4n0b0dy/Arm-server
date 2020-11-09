@@ -1,9 +1,11 @@
 import os.path
+import os
 import pyinotify
 import json
 import requests
-import configs.config
-import os
+import sys
+sys.path.insert(0, '../configs/')
+import config
 import numpy as np
 import IK_SOLVER
 
@@ -65,13 +67,20 @@ def reduce_data(data):
     return hand_data
 
 def convert_data(hand_data):
-    shoulder_rot_pos,
-    shoulder_bend_pos,
-    elbow_pos,
-    wrist_bend_pos = IK_SOLVER.calc_arm_positions(hand_data['WRIST'])
+    shoulder_rot_pos, shoulder_bend_pos, elbow_pos, wrist_bend_pos = IK_SOLVER.calc_arm_positions(hand_data['WRIST'])
     wrist_rot_pos = IK_SOLVER.calc_wrist_rotation(hand_data['POINTER_BASE'],hand_data['PINKY_BASE'])
     thumb_pos = IK_SOLVER.calc_fingers(hand_data['THUMB_TIP'], hand_data['THUMB_BASE'])
     pointer_pos = IK_SOLVER.calc_fingers(hand_data['POINTER_TIP'], hand_data['POINTER_BASE'])
     middle_pos = IK_SOLVER.calc_fingers(hand_data['MIDDLE_TIP'], hand_data['MIDDLE_BASE'])
     ring_pos = IK_SOLVER.calc_fingers(hand_data['RING_TIP'], hand_data['RING_BASE'])
     pinky_pos = IK_SOLVER.calc_fingers(hand_data['PINKY_TIP'], hand_data['PINKY_BASE'])
+    return {'SHOULDER_ROTATE':shoulder_rot_pos,
+            'SHOULDER_BEND':shoulder_bend_pos,
+            'ELBOW':elbow_pos,
+            'WRIST_BEND':wrist_bend_pos,
+            'WRIST_ROTATE':wrist_rot_pos,
+            'THUMB':thumb_pos,
+            'POINTER':pointer_pos,
+            'MIDDLE':middle_pos,
+            'RING':ring_pos,
+            'PINKY':pinky_pos}
