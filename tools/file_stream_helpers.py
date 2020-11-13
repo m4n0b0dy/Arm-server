@@ -10,11 +10,10 @@ sys.path.insert(0, '../configs/')
 import config
 import numpy as np
 import IK_SOLVER
-import pandas as pd
-
 
 class FileWatcher(pyinotify.ProcessEvent):
     def __init__(self, watchdir, IP, PORT):
+        #remove all files in watchdir to save space
         files = glob.glob(watchdir+'*')
         for f in files:
                 os.remove(f)
@@ -34,15 +33,6 @@ class FileWatcher(pyinotify.ProcessEvent):
         #self.logs.append(api_res)
         #print(command_json)
 
-    def stream_median(self, command_json):
-        self.cntr += 1
-        if self.cntr == config.STREAM_RATE:
-            self.cntr = 0
-            ret_df = self.stream_df.copy()
-            self.stream_df = pd.DataFrame()
-            return dict(ret_df.mean())
-        self.stream_df = self.stream_df.append(command_json, ignore_index=True)
-
     def process_IN_CREATE(self, event):
         pathname = os.path.join(event.path, event.name)
         raw_data = load_json(pathname)
@@ -52,9 +42,8 @@ class FileWatcher(pyinotify.ProcessEvent):
             data = reduce_data(raw_data)
             data = convert_data(data)
             data = clean_data(data)
-#            data = self.stream_median(data)
-#            if data:
             self.send_commands(data)
+            
 def load_json(path):
     try:
         #going to try one after the other
@@ -70,18 +59,12 @@ def divide_chunks(l, n):
     return list(zip(*[iter(l)]*n))
 
 #very specialized function to extract the x,y,z coordinates I want
-#UPDATE now going only from hand
 def reduce_data(data):
     if not data['people']:
         return
     data = data['people'][0]
-    #all_body_data = divide_chunks(data['pose_keypoints_2d'], 3)
-    #body_data = {k:list(all_body_data[v]) for k,v in config.KEY_BODY_INDEXES.items()}
-
     all_hand_data = divide_chunks(data['hand_{HAND}_keypoints_2d'.format(HAND=config.HAND)], 3)
     hand_data = {k:np.array(all_hand_data[v]) for k,v in config.KEY_HAND_INDEXES.items()}
-
-    #return {'body_data':body_data, 'hand_data':hand_data}
     return hand_data
 
 def convert_data(hand_data):
@@ -92,12 +75,12 @@ def convert_data(hand_data):
     middle_pos = IK_SOLVER.calc_fingers(hand_data['MIDDLE_TIP'], hand_data['MIDDLE_BASE'],config.HAND_NORM['MIDDLE'])
     ring_pos = IK_SOLVER.calc_fingers(hand_data['RING_TIP'], hand_data['RING_BASE'],config.HAND_NORM['RING'])
     pinky_pos = IK_SOLVER.calc_fingers(hand_data['PINKY_TIP'], hand_data['PINKY_BASE'],config.HAND_NORM['PINKY'])
-    return { # 'SHOULDER_ROTATE':shoulder_rot_pos,
-       #    'SHOULDER_BEND':shoulder_bend_pos,
-      #      'ELBOW':elbow_pos,
-#            'WRIST_BEND':wrist_bend_pos,
-#            'WRIST_ROTATE':wrist_rot_pos, #not great needs more work
-           'THUMB':thumb_pos,
+    return {'SHOULDER_ROTATE':shoulder_rot_pos,
+            'SHOULDER_BEND':shoulder_bend_pos,
+            'ELBOW':elbow_pos,
+            'WRIST_BEND':wrist_bend_pos,
+            'WRIST_ROTATE':wrist_rot_pos, #not great needs more work
+            'THUMB':thumb_pos,
             'INDEX':pointer_pos,
             'MIDDLE':middle_pos,
             'RING':ring_pos,
