@@ -20,16 +20,13 @@ ENV PATH="/opt/cmake-3.16.0-Linux-x86_64/bin:${PATH}"
 WORKDIR /openpose
 RUN git clone https://github.com/CMU-Perceptual-Computing-Lab/openpose.git .
 
-#getting my code
-RUN git clone https://github.com/m4n0b0dy/Arm-server.git
-RUN pip3 install --upgrade pip==20.0.2 wheel==0.34.2 setuptools==49.6.0
-WORKDIR /openpose/Arm-server/env
-RUN pip3 install -r requirements.txt
-WORKDIR /openpose
-
 #build it
 WORKDIR /openpose/build
 RUN cmake -DBUILD_PYTHON=ON .. && make -j `nproc`
 WORKDIR /openpose
 
-#then add the calling of my code
+#then add the copying of my code
+RUN pip3 install --upgrade pip==20.0.2 wheel==0.34.2 setuptools==49.6.0
+COPY ./env/requirements.txt /requirements.txt
+RUN pip3 install -r requirements.txt
+COPY . /

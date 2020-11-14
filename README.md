@@ -31,6 +31,19 @@ docker build -t myopenpose .
 sudo xhost + 
 docker run --network="host" -e DISPLAY --privileged --gpus all --device=/dev/video0 --name myopenpose -it myopenpose:latest
 ```
+### Then with docker image built, we can run code specific to the use case
+### To run the finger detection, I the following to work best
+```sh
+./build/examples/openpose/openpose.bin --write_json output/ --hand
+python3 Arm-server/deploy/file_stream.py
+```
+### To run the wrist/arm detection, it's best to normalize accordingly
+```sh
+./build/examples/openpose/openpose.bin --write_json output/ --hand --keypoint_scale 4
+python3 Arm-server/deploy/file_stream.py
+```
+### To improve/fine tune the readings of your hand/arm please read through IK_SOLVER.py as it holds the inverse kinematics logic (what determines movement from coordinates)
+
 ## Server Specs
 - GPU: Nvidia 1660 Super
 - CPU: Intel E5-1620 3.6GHz 4-Core
