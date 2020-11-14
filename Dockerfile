@@ -27,6 +27,6 @@ WORKDIR /openpose
 
 #then add the copying of my code
 RUN pip3 install --upgrade pip==20.0.2 wheel==0.34.2 setuptools==49.6.0
-COPY ./env/requirements.txt /requirements.txt
+COPY ./env/requirements.txt /openpose/requirements.txt
 RUN pip3 install -r requirements.txt
-COPY . /
+COPY . /openpose/

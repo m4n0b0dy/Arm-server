@@ -20,8 +20,6 @@ class FileWatcher(pyinotify.ProcessEvent):
         self.logs = []
         self.IP = IP
         self.PORT = PORT
-        self.cntr = 0
-        self.stream_df = pd.DataFrame()
         pyinotify.ProcessEvent.__init__(self)
         wm = pyinotify.WatchManager()
         self.notifier = pyinotify.ThreadedNotifier(wm, self)
@@ -43,7 +41,7 @@ class FileWatcher(pyinotify.ProcessEvent):
             data = convert_data(data)
             data = clean_data(data)
             self.send_commands(data)
-            
+
 def load_json(path):
     try:
         #going to try one after the other

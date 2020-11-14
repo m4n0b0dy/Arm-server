@@ -32,7 +32,7 @@ def calc_fingers(tip, base, norm):
         dist = np.abs(np.linalg.norm(tip-base))/100
         return dist
 """
-# these are equations I thought would work but did not
+# these are equations I thought would work but have not so far
 def calc_arm_positions(coordinates):
 	coordinates[1] = coordinates[1]*-1
 	ARM.ee = coordinates

@@ -1,6 +1,6 @@
 from os import getenv
 #fetch these from dockerfile
-OUTPUT_DIR  = getenv('OUTPUT_DIR','../../output/')
+OUTPUT_DIR  = getenv('OUTPUT_DIR','../output/')
 ARM_SERVER_IP = getenv('ARM_IP','arm')
 ARM_SERVER_PORT = getenv('ARM_PORT','5005')
 HAND = getenv('HAND','right')
