@@ -8,6 +8,7 @@
 - [x] Python code developed to read stream of OpenPose demo output and call Arm API
 - [x] Custom OpenPose Dockerfile for specific use case
 - [x] Enable Docker usage of network, display, and webcam
+- [ ] Revisit inverse kinematics equations for refined movement
 
 ## Project Tools
 - Python
