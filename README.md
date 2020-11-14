@@ -21,8 +21,8 @@
 - Docker base images
   - OpenPose
 
-## Publication
-- [Not Published yet](linkedin.com)
+## The Video
+- [Video Published Here](linkedin.com)
 
 ## Installation and Running
 ```sh
