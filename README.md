@@ -1,6 +1,6 @@
 # The Server
 
-## Controlling a robotic arm with hand (10 DOF) via OpenPose and PCA9685 Pi programming
+## Extracing Hand and Body movement via OpenPose and translating into [Robot Arm](https://github.com/m4n0b0dy/Arm-robot) commands
 
 ## Project ToDos
 - [x] OpenPose WebCam succesfully run on Linux Server
