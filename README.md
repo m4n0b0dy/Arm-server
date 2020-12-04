@@ -22,7 +22,7 @@
   - OpenPose
 
 ## The Video
-- [Video Published Here](linkedin.com)
+- [Video Published Here](https://www.reddit.com/r/robotics/comments/jvvtqn/real_time_robot_armhand_control_with_human/)
 
 ## Installation and Running
 ```sh
